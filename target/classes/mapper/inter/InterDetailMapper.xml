@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterDetail" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="explaindec" property="explaindec" jdbcType="VARCHAR" />
+    <result column="meth" property="meth" jdbcType="VARCHAR" />
+    <result column="notedec" property="notedec" jdbcType="VARCHAR" />
+    <result column="mark" property="mark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IntergralDetailExtend">
+  	<id column="ID" property="id" jdbcType="VARCHAR"/>
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="explaindec" property="explaindec" jdbcType="VARCHAR" />
+    <result column="meth" property="meth" jdbcType="VARCHAR" />
+    <result column="notedec" property="notedec" jdbcType="VARCHAR" />
+    <result column="mark" property="mark" jdbcType="VARCHAR" />
+    </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, content, score, explaindec, meth, notedec, mark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterDetail" >
+    insert into inter_detail (id, content, score, 
+      explaindec, meth, notedec, 
+      mark)
+    values (#{id,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, 
+      #{explaindec,jdbcType=VARCHAR}, #{meth,jdbcType=VARCHAR}, #{notedec,jdbcType=VARCHAR}, 
+      #{mark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetail" >
+    insert into inter_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="explaindec != null" >
+        explaindec,
+      </if>
+      <if test="meth != null" >
+        meth,
+      </if>
+      <if test="notedec != null" >
+        notedec,
+      </if>
+      <if test="mark != null" >
+        mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="explaindec != null" >
+        #{explaindec,jdbcType=VARCHAR},
+      </if>
+      <if test="meth != null" >
+        #{meth,jdbcType=VARCHAR},
+      </if>
+      <if test="notedec != null" >
+        #{notedec,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        #{mark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetail" >
+    update inter_detail
+    <set >
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="explaindec != null" >
+        explaindec = #{explaindec,jdbcType=VARCHAR},
+      </if>
+      <if test="meth != null" >
+        meth = #{meth,jdbcType=VARCHAR},
+      </if>
+      <if test="notedec != null" >
+        notedec = #{notedec,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterDetail" >
+    update inter_detail
+    set content = #{content,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      explaindec = #{explaindec,jdbcType=VARCHAR},
+      meth = #{meth,jdbcType=VARCHAR},
+      notedec = #{notedec,jdbcType=VARCHAR},
+      mark = #{mark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 获取积分细则列表 -->
+     <select id="getAll" resultMap="BaseResultMap" parameterType="map">
+    select * from inter_detail t
+    where 1=1
+      <if test="content != null and content != ''" >
+     	and t.content LIKE (concat('%',concat(#{content,jdbcType=VARCHAR},'%'))),
+      </if>
+      <if test="mark != null and mark != ''" >
+     	and t.mark = #{mark,jdbcType=VARCHAR}
+      </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+    <!-- 积分项页数 -->
+     <select id="countGetAll" resultType="Integer" parameterType="map">
+        select count(1)
+        from inter_detail t
+        where 1=1 
+     <if test="content != null and content != ''" >
+     	  and t.content LIKE (concat('%',concat(#{content,jdbcType=VARCHAR},'%'))) 
+      </if>
+    </select>
+    <!-- 获取积分细则种类 -->
+    <select id="getInterDetailKind" parameterType="map" resultMap="BaseResultMap">
+    	select distinct mark from inter_detail 
+  	</select>
+  	
+  	<!--根据id获取积分细则列表 （注意返回结果必须自定义） -->
+  	<select id="getInterDetailById" parameterType="map" resultMap="ExtendResultMap">
+    select * from inter_detail t
+        where t.id = #{id,jdbcType=VARCHAR}
+  	</select>
+  	<!--根据积分类别获取全部积分细则  -->
+  	<select id="getAllInterDetail" parameterType="map" resultMap="BaseResultMap">
+    	select * from inter_detail t
+    	where t.mark = #{mark,jdbcType=VARCHAR}
+  	</select>
+  	<!--根据积分细则内容获取细则id  -->
+  	<select id="getInterDetailIdByContont" parameterType="map" resultMap="ExtendResultMap">
+    	select * from inter_detail t
+    	where t.content = #{content,jdbcType=VARCHAR}
+  	</select>
+</mapper>

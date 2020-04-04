@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComAddressMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComAddress" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="province_code" property="provinceCode" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="city_code" property="cityCode" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="county_code" property="countyCode" jdbcType="VARCHAR" />
+    <result column="subdistrict" property="subdistrict" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="foreign_key" property="foreignKey" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, province, province_code, city, city_code, county, county_code, subdistrict, address, 
+    foreign_key
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from com_address
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_address
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComAddress" >
+    insert into com_address (id, province, province_code, 
+      city, city_code, county, 
+      county_code, subdistrict, address, 
+      foreign_key)
+    values (#{id,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
+      #{countyCode,jdbcType=VARCHAR}, #{subdistrict,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{foreignKey,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComAddress" >
+    insert into com_address
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="provinceCode != null" >
+        province_code,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="cityCode != null" >
+        city_code,
+      </if>
+      <if test="county != null" >
+        county,
+      </if>
+      <if test="countyCode != null" >
+        county_code,
+      </if>
+      <if test="subdistrict != null" >
+        subdistrict,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="foreignKey != null" >
+        foreign_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null" >
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null" >
+        #{countyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="subdistrict != null" >
+        #{subdistrict,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignKey != null" >
+        #{foreignKey,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComAddress" >
+    update com_address
+    <set >
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null" >
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null" >
+        county_code = #{countyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="subdistrict != null" >
+        subdistrict = #{subdistrict,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignKey != null" >
+        foreign_key = #{foreignKey,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComAddress" >
+    update com_address
+    set province = #{province,jdbcType=VARCHAR},
+      province_code = #{provinceCode,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      county = #{county,jdbcType=VARCHAR},
+      county_code = #{countyCode,jdbcType=VARCHAR},
+      subdistrict = #{subdistrict,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      foreign_key = #{foreignKey,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

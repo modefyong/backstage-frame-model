@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComDutyMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComDuty" >
+    <id column="d_id" property="dId" jdbcType="VARCHAR" />
+    <result column="d_code" property="dCode" jdbcType="VARCHAR" />
+    <result column="d_name" property="dName" jdbcType="VARCHAR" />
+    <result column="d_status" property="dStatus" jdbcType="VARCHAR" />
+    <result column="d_create_user" property="dCreateUser" jdbcType="VARCHAR" />
+    <result column="d_create_datetime" property="dCreateDatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    d_id, d_code, d_name, d_status, d_create_user, d_create_datetime
+  </sql>
+  <select id="countSelectAll" resultType="Integer" parameterType="map">
+        select count(1) from com_duty 
+        where 1=1
+        <if test="dName !=null and dName != ''">
+            <!-- and d_name = #{dName,jdbcType=VARCHAR} -->
+            and d_name LIKE (concat('%',concat(#{dName,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="dStatus !=null and dStatus != ''">
+            and d_status = #{dStatus,jdbcType=VARCHAR}
+        </if>
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+        select * from com_duty 
+        where 1=1 
+        <if test="dName !=null and dName != ''">
+            <!-- and d_name = #{dName,jdbcType=VARCHAR} -->
+            and d_name LIKE (concat('%',concat(#{dName,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="dStatus !=null and dStatus != ''">
+            and d_status = #{dStatus,jdbcType=VARCHAR}
+        </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <select id="dutyList" resultMap="BaseResultMap">
+        select * from com_duty 
+        where 1=1        
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from com_duty
+    where d_id = #{dId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_duty
+    where d_id = #{dId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComDuty" >
+    insert into com_duty (d_id, d_code, d_name, 
+      d_status, d_create_user, d_create_datetime
+      )
+    values (#{dId,jdbcType=VARCHAR}, #{dCode,jdbcType=VARCHAR}, #{dName,jdbcType=VARCHAR}, 
+      #{dStatus,jdbcType=VARCHAR}, #{dCreateUser,jdbcType=VARCHAR}, #{dCreateDatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComDuty" >
+    insert into com_duty
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dId != null" >
+        d_id,
+      </if>
+      <if test="dCode != null" >
+        d_code,
+      </if>
+      <if test="dName != null" >
+        d_name,
+      </if>
+      <if test="dStatus != null" >
+        d_status,
+      </if>
+      <if test="dCreateUser != null" >
+        d_create_user,
+      </if>
+      <if test="dCreateDatetime != null" >
+        d_create_datetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dId != null" >
+        #{dId,jdbcType=VARCHAR},
+      </if>
+      <if test="dCode != null" >
+        #{dCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dName != null" >
+        #{dName,jdbcType=VARCHAR},
+      </if>
+      <if test="dStatus != null" >
+        #{dStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="dCreateUser != null" >
+        #{dCreateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dCreateDatetime != null" >
+        #{dCreateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComDuty" >
+    update com_duty
+    <set >
+      <if test="dCode != null" >
+        d_code = #{dCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dName != null" >
+        d_name = #{dName,jdbcType=VARCHAR},
+      </if>
+      <if test="dStatus != null" >
+        d_status = #{dStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="dCreateUser != null" >
+        d_create_user = #{dCreateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dCreateDatetime != null" >
+        d_create_datetime = #{dCreateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where d_id = #{dId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComDuty" >
+    update com_duty
+    set d_code = #{dCode,jdbcType=VARCHAR},
+      d_name = #{dName,jdbcType=VARCHAR},
+      d_status = #{dStatus,jdbcType=VARCHAR},
+      d_create_user = #{dCreateUser,jdbcType=VARCHAR},
+      d_create_datetime = #{dCreateDatetime,jdbcType=TIMESTAMP}
+    where d_id = #{dId,jdbcType=VARCHAR}
+  </update>
+</mapper>

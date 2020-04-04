@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.IngIntergralMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.IngIntergral" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="intergral" property="intergral" jdbcType="VARCHAR" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IngIntergralExtend">
+  	<id column="ID" property="id" jdbcType="VARCHAR"/>
+    <result column="intergral" property="intergral" jdbcType="VARCHAR" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="VARCHAR" />
+    </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, intergral, user, age
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ing_intergral
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ing_intergral
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.IngIntergral" >
+    insert into ing_intergral (id, intergral, user, 
+      age)
+    values (#{id,jdbcType=VARCHAR}, #{intergral,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, 
+      #{age,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.IngIntergral" >
+    insert into ing_intergral
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="intergral != null" >
+        intergral,
+      </if>
+      <if test="user != null" >
+        user,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="intergral != null" >
+        #{intergral,jdbcType=VARCHAR},
+      </if>
+      <if test="user != null" >
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.IngIntergral" >
+    update ing_intergral
+    <set >
+      <if test="intergral != null" >
+        intergral = #{intergral,jdbcType=VARCHAR},
+      </if>
+      <if test="user != null" >
+        user = #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.IngIntergral" >
+    update ing_intergral
+    set intergral = #{intergral,jdbcType=VARCHAR},
+      user = #{user,jdbcType=VARCHAR},
+      age = #{age,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 获取积分列表 -->
+     <select id="getAll" resultMap="BaseResultMap" parameterType="map">
+    select * from ing_intergral t
+    where 1=1
+      <if test="userName != null and userName != ''" >
+     	<!--    and  t.user = #{userName,jdbcType=VARCHAR} -->
+     	and t.user LIKE (concat('%',concat(#{userName,jdbcType=VARCHAR},'%'))) 
+      </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+    <!-- 积分项页数 -->
+     <select id="countGetAll" resultType="Integer" parameterType="map">
+        select count(1)
+        from ing_intergral t
+        where 1=1 
+     <if test="userName != null and userName != ''" >
+     	  and t.user LIKE (concat('%',concat(#{userName,jdbcType=VARCHAR},'%'))) 
+      </if>
+    </select>
+    <!-- 根据用户名获取积分列表 -->
+    <select id="getIntergralName" parameterType="map" resultMap="BaseResultMap">
+    select * from ing_intergral t where t.user = #{userName,jdbcType=VARCHAR}
+  	</select>
+  <!--根据id获取积分列表  -->
+  	<select id="getById" parameterType="map" resultMap="ExtendResultMap">
+    select * from ing_intergral t
+        where t.id = #{id,jdbcType=VARCHAR}
+  	</select>
+</mapper>

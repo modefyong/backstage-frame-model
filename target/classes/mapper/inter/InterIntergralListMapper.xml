@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterIntergralListMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterIntergralList" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="detail_kind_id" property="detailKindId" jdbcType="VARCHAR" />
+    <result column="all_sc" property="allSc" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="dep_id" property="depId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IntergralListExtend">
+  	<id column="ID" property="id" jdbcType="VARCHAR"/>
+    <result column="detail_kind_id" property="detailKindId" jdbcType="VARCHAR" />
+    <result column="all_sc" property="allSc" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="dep_id" property="depId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="realName" property="realName" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="detailKind" property="detailKind" jdbcType="VARCHAR" />
+    <result column="allScore" property="allScore" jdbcType="VARCHAR" />
+    <result column="avgScore" property="avgScore" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="VARCHAR" />
+    </resultMap>
+    
+  <sql id="Base_Column_List" >
+    id, detail_kind_id, all_sc, user_id, dep_id, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_intergral_list
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_intergral_list
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterIntergralList" >
+    insert into inter_intergral_list (id, detail_kind_id, all_sc, 
+      user_id, dep_id, CREATE_TIME
+      )
+    values (#{id,jdbcType=VARCHAR}, #{detailKindId,jdbcType=VARCHAR}, #{allSc,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{depId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterIntergralList" >
+    insert into inter_intergral_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="detailKindId != null" >
+        detail_kind_id,
+      </if>
+      <if test="allSc != null" >
+        all_sc,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="depId != null" >
+        dep_id,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="detailKindId != null" >
+        #{detailKindId,jdbcType=VARCHAR},
+      </if>
+      <if test="allSc != null" >
+        #{allSc,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        #{depId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterIntergralList" >
+    update inter_intergral_list
+    <set >
+      <if test="detailKindId != null" >
+        detail_kind_id = #{detailKindId,jdbcType=VARCHAR},
+      </if>
+      <if test="allSc != null" >
+        all_sc = #{allSc,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        dep_id = #{depId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterIntergralList" >
+    update inter_intergral_list
+    set detail_kind_id = #{detailKindId,jdbcType=VARCHAR},
+      all_sc = #{allSc,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      dep_id = #{depId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	 <!-- 获取积分列表 -->
+     <select id="getAll" resultMap="ExtendResultMap" parameterType="map">
+	    select t1.id,t2.inter_kind as detailKind,  t3.REAL_NAME as realName, t4.ORGANIZE_NAME as department,t1.all_sc, t1.CREATE_TIME  from inter_intergral_list t1, inter_detailkind t2, user t3,sys_organize t4 
+		WHERE t1.detail_kind_id = t2.id and  t1.user_id = t3.id and t1.dep_id = t4.id group by t1.user_id
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+    <!-- 积分列表页数 -->
+     <select id="countGetAll" resultType="Integer" parameterType="map">
+        select count(1) from inter_intergral_list
+    </select>
+    
+    <!--根据用户id获取积分类别及对应类别分数 -->
+  	<select id="getInterListKindScore" parameterType="map" resultMap="ExtendResultMap">
+    	select t2.inter_kind as detailKind,t1.all_sc from inter_intergral_list t1, inter_detailkind t2 
+    	WHERE t1.detail_kind_id = t2.id  
+  	</select>
+  	
+  	<!--根据用户id获取积分列表  -->
+  	<select id="getInterListByUserId" parameterType="map" resultMap="ExtendResultMap">
+    	select * from inter_intergral_list t where t.user_id = #{userId,jdbcType=VARCHAR}
+  	</select>
+  	<!-- 获取全部积分列表（无参） -->
+     <select id="getAllInterList" resultMap="ExtendResultMap" parameterType="map">
+	    select t1.id,t1.detail_kind_id,t2.inter_kind as detailKind,  t3.REAL_NAME as realName, t4.ORGANIZE_NAME as department,t1.all_sc, t1.CREATE_TIME  from inter_intergral_list t1, inter_detailkind t2, user t3,sys_organize t4 
+		WHERE t1.detail_kind_id = t2.id and  t1.user_id = t3.id and t1.dep_id = t4.id 
+		<!-- group by t1.user_id -->
+    </select>
+    
+    <!-- 获取积分列表个人总分 -->
+     <select id="getPersonAllScore" resultMap="ExtendResultMap" parameterType="map">
+	    select t1.id,t3.REAL_NAME as realName, t4.ORGANIZE_NAME as department,SUM(t1.all_sc) as allScore, t1.CREATE_TIME  from inter_intergral_list t1, inter_detailkind t2, user t3,sys_organize t4 
+		WHERE t1.detail_kind_id = t2.id and  t1.user_id = t3.id and t1.dep_id = t4.id 
+		group by t1.user_id ORDER BY allScore DESC
+    </select>
+    <!-- 获取积分列表个人总分(含参数) -->
+     <select id="getPersonScore" resultMap="ExtendResultMap" parameterType="map">
+	    select t1.id,t3.REAL_NAME as realName, t4.ORGANIZE_NAME as department,SUM(t1.all_sc) as allScore, t1.CREATE_TIME  from inter_intergral_list t1, inter_detailkind t2, user t3,sys_organize t4 
+		WHERE t1.detail_kind_id = t2.id and  t1.user_id = t3.id and t1.dep_id = t4.id and t3.LOGIN_NAME =#{loginName,jdbcType=VARCHAR}
+    </select>
+    <!-- 获取积分列表部门总分 -->
+     <select id="getDepAllScore" resultMap="ExtendResultMap" parameterType="map">
+	    select t1.id,t3.REAL_NAME as realName, t4.ORGANIZE_NAME as department,COUNT( DISTINCT t1.user_id) as count,SUM(t1.all_sc)/COUNT( DISTINCT t1.user_id) as avgScore,SUM(t1.all_sc) as allScore, t1.CREATE_TIME  
+		from inter_intergral_list t1, inter_detailkind t2, user t3,sys_organize t4 
+		WHERE t1.detail_kind_id = t2.id and  t1.user_id = t3.id and t1.dep_id = t4.id 
+		group by department ORDER BY allScore DESC
+    </select>
+    <!--根据userId和细则种类id获取一条积分展示列表信息  -->
+  	<select id="getInterListByUserIdAndKindId" parameterType="map" resultMap="ExtendResultMap">
+    	select * from inter_intergral_list t where t.user_id = #{userId,jdbcType=VARCHAR} and t.detail_kind_id = #{detailKindId,jdbcType=VARCHAR}
+  	</select>
+  	
+  	<!-- 获取全部积分列表（无参）react -->
+     <select id="getAllInterListReact" resultMap="ExtendResultMap" parameterType="map">
+	   select t1.id,t1.detail_kind_id,t2.inter_kind as detailKind, t1.all_sc, t1.CREATE_TIME  from 
+	   inter_intergral_list t1 LEFT JOIN inter_detailkind t2 on t1.detail_kind_id = t2.id ORDER BY t1.CREATE_TIME
+    </select>
+</mapper>

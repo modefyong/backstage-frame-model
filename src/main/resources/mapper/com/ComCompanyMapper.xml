@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComCompany" >
+    <id column="c_id" property="cId" jdbcType="VARCHAR" />
+    <result column="c_name" property="cName" jdbcType="VARCHAR" />
+    <result column="c_address" property="cAddress" jdbcType="VARCHAR" />
+    <result column="c_phone" property="cPhone" jdbcType="VARCHAR" />
+    <result column="c_postcode" property="cPostcode" jdbcType="VARCHAR" />
+    <result column="c_longitude" property="cLongitude" jdbcType="VARCHAR" />
+    <result column="c_latitude" property="cLatitude" jdbcType="VARCHAR" />
+    <result column="c_code" property="cCode" jdbcType="VARCHAR" />
+    <result column="c_lic_code" property="cLicCode" jdbcType="VARCHAR" />
+    <result column="c_social_credit_code" property="cSocialCreditCode" jdbcType="VARCHAR" />
+    <result column="c_type" property="cType" jdbcType="VARCHAR" />
+    <result column="c_src" property="cSrc" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="province_code" property="provinceCode" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="city_code" property="cityCode" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="county_code" property="countyCode" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="ref_address" property="refAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="CompinfoResultMap" type="com.lrhb.service.beans.common.CompanyInfoRsp" >
+    <id column="c_id" property="id" jdbcType="VARCHAR" />
+    <result column="c_name" property="name" jdbcType="VARCHAR" />
+    <result column="c_address" property="address" jdbcType="VARCHAR" />
+    <result column="c_phone" property="phone" jdbcType="VARCHAR" />
+    <result column="c_postcode" property="postcode" jdbcType="VARCHAR" />
+    <result column="q_code" property="qcode" jdbcType="VARCHAR" />
+    <result column="q_vali_date_end" property="valiDateEnd" jdbcType="VARCHAR" />
+    <result column="q_auth_hw_type" property="authHwType" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="CompanyListResultMap" type="com.lrhb.service.beans.common.Company" >
+    <id column="c_id" property="id" jdbcType="VARCHAR" />
+    <result column="c_name" property="name" jdbcType="VARCHAR" />
+    <result column="c_address" property="address" jdbcType="VARCHAR" />
+    <result column="c_phone" property="phone" jdbcType="VARCHAR" />
+    <result column="c_postcode" property="postCode" jdbcType="VARCHAR" />
+    <result column="c_longitude" property="longitude" jdbcType="VARCHAR" />
+    <result column="c_latitude" property="latitude" jdbcType="VARCHAR" />
+    <result column="c_code" property="code" jdbcType="VARCHAR" />
+    <result column="c_lic_code" property="licCode" jdbcType="VARCHAR" />
+    <result column="c_social_credit_code" property="socialCreditCode" jdbcType="VARCHAR" />
+    <result column="c_type" property="type" jdbcType="VARCHAR" />
+    <result column="c_src" property="src" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     , c_longitude, c_latitude, c_code, c_lic_code, 
+    c_social_credit_code, c_type, c_src
+  </sql>
+  <select id="countSelectAll" resultType="Integer" parameterType="map">
+        select count(1) from com_company 
+        where 1=1
+        <if test="name !=null and name != ''">
+            <!-- and c_name = #{name,jdbcType=VARCHAR} -->
+            and c_name LIKE (concat('%',concat(#{name,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="address !=null and address != ''">
+            <!-- and c_address = #{address,jdbcType=VARCHAR} -->
+            and c_address LIKE (concat('%',concat(#{address,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="type !=null and type != ''">
+            and c_type = #{type,jdbcType=VARCHAR}
+            <if test="typeTwo !=null and typeTwo != ''">
+           		 or c_type = #{typeTwo,jdbcType=VARCHAR}
+      		</if>
+        </if>
+  </select>
+  <select id="countSelectByCode" resultType="Integer" parameterType="map">
+        select count(*) from  com_company c inner join  com_qualification q on c.c_id = q.q_comp_code 
+    where 1=1
+    <if test="cid !=null and cid != ''">
+         and c.c_id = #{cid,jdbcType=VARCHAR}
+    </if>
+    <if test="ctype !=null and ctype != ''">
+         and c.c_type = #{ctype,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <select id="countSelectBusinessCompany" resultType="Integer" parameterType="map">
+        select count(*) from  com_company c inner join  com_qualification q on c.c_id = q.q_comp_code 
+    where 1=1
+    <if test="ctype !=null and ctype != ''">
+         and c.c_type = #{ctype,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectAll" resultMap="CompanyListResultMap" parameterType="map">
+        select * from com_company 
+        where 1=1 
+        <if test="name !=null and name != ''">
+            <!-- and c_name = #{name,jdbcType=VARCHAR} -->
+            and c_name LIKE (concat('%',concat(#{name,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="address !=null and address != ''">
+            <!-- and c_address = #{address,jdbcType=VARCHAR} -->
+            and c_address LIKE (concat('%',concat(#{address,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="type !=null and type != ''">
+            and c_type = #{type,jdbcType=VARCHAR}
+               <if test="typeTwo !=null and typeTwo != ''">
+           		 or c_type = #{typeTwo,jdbcType=VARCHAR}
+      		   </if>
+        </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+   </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from com_company
+    where c_id = #{cId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectCompDetailById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select  c.* , addr.* from com_company c left join com_address addr on c.ref_address=addr.id
+    where c.c_id = #{cId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCompByCode" resultMap="CompinfoResultMap" parameterType="map" >
+    select  c.c_id, c.c_name, c.c_address, c.c_phone, c.c_postcode,q.q_code
+    from com_company c inner join  com_qualification q on c.c_id = q.q_comp_code 
+    where 1=1
+    <if test="cid !=null and cid != ''">
+         and c.c_id = #{cid,jdbcType=VARCHAR}
+    </if>
+    <if test="ctype !=null and ctype != ''">
+         and c.c_type = #{ctype,jdbcType=VARCHAR}
+    </if>
+      limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <select id="getCompNameById" resultType="String" parameterType="java.lang.String" >
+    select c_name from com_company 
+    where 1=1
+    <if test="id !=null and id != ''">
+         and c_id = #{id,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectBusinessCompany" resultMap="CompinfoResultMap" parameterType="map" >
+    select  c.c_id, c.c_name, c.c_address, c.c_phone, c.c_postcode,q.q_code,q.q_vali_date_end,q.q_auth_hw_type
+    from com_company c inner join  com_qualification q on c.c_id = q.q_comp_code 
+    where 1=1
+    <if test="ctype !=null and ctype != ''">
+         and c.c_type = #{ctype,jdbcType=VARCHAR}
+    </if>
+      limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_company
+    where c_id = #{cId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    insert into com_company (c_id, c_name, c_address, 
+      c_phone, c_postcode, c_longitude, 
+      c_latitude, c_code, c_lic_code, 
+      c_social_credit_code, c_type, c_src
+      )
+    values (#{cId,jdbcType=VARCHAR}, #{cName,jdbcType=VARCHAR}, #{cAddress,jdbcType=VARCHAR}, 
+      #{cPhone,jdbcType=VARCHAR}, #{cPostcode,jdbcType=VARCHAR}, #{cLongitude,jdbcType=VARCHAR}, 
+      #{cLatitude,jdbcType=VARCHAR}, #{cCode,jdbcType=VARCHAR}, #{cLicCode,jdbcType=VARCHAR}, 
+      #{cSocialCreditCode,jdbcType=VARCHAR}, #{cType,jdbcType=VARCHAR}, #{cSrc,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    insert into com_company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cId != null" >
+        c_id,
+      </if>
+      <if test="cName != null" >
+        c_name,
+      </if>
+      <if test="cAddress != null" >
+        c_address,
+      </if>
+      <if test="cPhone != null" >
+        c_phone,
+      </if>
+      <if test="cPostcode != null" >
+        c_postcode,
+      </if>
+      <if test="cLongitude != null" >
+        c_longitude,
+      </if>
+      <if test="cLatitude != null" >
+        c_latitude,
+      </if>
+      <if test="cCode != null" >
+        c_code,
+      </if>
+      <if test="cLicCode != null" >
+        c_lic_code,
+      </if>
+      <if test="cSocialCreditCode != null" >
+        c_social_credit_code,
+      </if>
+      <if test="cType != null" >
+        c_type,
+      </if>
+      <if test="cSrc != null" >
+        c_src,
+      </if>
+      <if test="refAddress != null" >
+        ref_address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cId != null" >
+        #{cId,jdbcType=VARCHAR},
+      </if>
+      <if test="cName != null" >
+        #{cName,jdbcType=VARCHAR},
+      </if>
+      <if test="cAddress != null" >
+        #{cAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="cPhone != null" >
+        #{cPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="cPostcode != null" >
+        #{cPostcode,jdbcType=VARCHAR},
+      </if>
+      <if test="cLongitude != null" >
+        #{cLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="cLatitude != null" >
+        #{cLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="cCode != null" >
+        #{cCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cLicCode != null" >
+        #{cLicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cSocialCreditCode != null" >
+        #{cSocialCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cType != null" >
+        #{cType,jdbcType=VARCHAR},
+      </if>
+      <if test="cSrc != null" >
+        #{cSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="refAddress != null" >
+        #{refAddress,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    update com_company
+    <set >
+      <if test="cName != null" >
+        c_name = #{cName,jdbcType=VARCHAR},
+      </if>
+      <if test="cAddress != null" >
+        c_address = #{cAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="cPhone != null" >
+        c_phone = #{cPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="cPostcode != null" >
+        c_postcode = #{cPostcode,jdbcType=VARCHAR},
+      </if>
+      <if test="cLongitude != null" >
+        c_longitude = #{cLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="cLatitude != null" >
+        c_latitude = #{cLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="cCode != null" >
+        c_code = #{cCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cLicCode != null" >
+        c_lic_code = #{cLicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cSocialCreditCode != null" >
+        c_social_credit_code = #{cSocialCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cType != null" >
+        c_type = #{cType,jdbcType=VARCHAR},
+      </if>
+      <if test="cSrc != null" >
+        c_src = #{cSrc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where c_id = #{cId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    update com_company
+    set c_name = #{cName,jdbcType=VARCHAR},
+      c_address = #{cAddress,jdbcType=VARCHAR},
+      c_phone = #{cPhone,jdbcType=VARCHAR},
+      c_postcode = #{cPostcode,jdbcType=VARCHAR},
+      c_longitude = #{cLongitude,jdbcType=VARCHAR},
+      c_latitude = #{cLatitude,jdbcType=VARCHAR},
+      c_code = #{cCode,jdbcType=VARCHAR},
+      c_lic_code = #{cLicCode,jdbcType=VARCHAR},
+      c_social_credit_code = #{cSocialCreditCode,jdbcType=VARCHAR},
+      c_type = #{cType,jdbcType=VARCHAR},
+      c_src = #{cSrc,jdbcType=VARCHAR}
+    where c_id = #{cId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterAccuseAdviceMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterAccuseAdvice" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="check_state" property="checkState" jdbcType="VARCHAR" />
+    <result column="approval_opinion" property="approvalOpinion" jdbcType="VARCHAR" />
+    <result column="attachment_url" property="attachmentUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IntergralAccuseAdviceExtend" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="realName" property="realName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, type, description, state, user_id, CREATE_TIME, check_state, approval_opinion, attachment_url
+  </sql>
+  <!-- 分页获取投诉建议待审批列表 -->
+  <select id="selectItemAddForPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+  	where check_state = '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取投诉建议待审批列表数量 -->
+  <select id="selectItemAddForListCount" resultType="Integer">
+  	select count(1)
+  	from inter_accuse_advice
+  	where check_state = '0'
+  </select>
+  <!-- 分页获取投诉建议已审批列表 -->
+  <select id="selectItemAddHavePageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+  	where check_state != '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取投诉建议已审批列表数量 -->
+  <select id="selectItemAddHaveListCount" resultType="Integer">
+  	select count(1)
+  	from inter_accuse_advice
+  	where check_state != '0'
+  </select>
+  <!-- 分页获取投诉建议我发起的列表 -->
+  <select id="selectAccuseAdviceBySelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取投诉建议我发起的列表数量 -->
+  <select id="selectAccuseAdviceBySelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_accuse_advice
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!-- 分页获取投诉建议待我审批列表 -->
+  <select id="selectAccuseAdviceForSelfPageList" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取投诉建议待我审批列表数量 -->
+  <select id="selectAccuseAdviceForSelfListCount" resultType="Integer" parameterType="java.lang.String">
+  	select count(1)
+  	from inter_accuse_advice
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 分页获取投诉建议我已审批列表 -->
+  <select id="selectAccuseAdviceHaveSelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取投诉建议我已审批列表数量 -->
+  <select id="selectAccuseAdviceHaveSelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_accuse_advice
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 根据id获取投诉建议对象 -->
+  <select id="selectAccuseAdviceById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  		a.id, a.title, a.type, a.description, a.state, u.REAL_NAME user_id, a.CREATE_TIME, a.check_state, a.approval_opinion, a.attachment_url
+  	from 
+  		inter_accuse_advice a
+  	join 
+  		user u
+  	on 
+  		a.user_id = u.id
+    where a.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_accuse_advice
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_accuse_advice
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterAccuseAdvice" >
+    insert into inter_accuse_advice (id, title, type, 
+      description, state, user_id, CREATE_TIME,
+      check_state, approval_opinion, attachment_url)
+    values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{checkState,jdbcType=VARCHAR}, #{approvalOpinion,jdbcType=VARCHAR},
+      #{attachmentUrl,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterAccuseAdvice" >
+    insert into inter_accuse_advice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="checkState != null" >
+        check_state,
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion,
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkState != null" >
+        #{checkState,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalOpinion != null" >
+        #{approvalOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentUrl != null" >
+        #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterAccuseAdvice" >
+    update inter_accuse_advice
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkState != null" >
+        check_state = #{checkState,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion = #{approvalOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterAccuseAdvice" >
+    update inter_accuse_advice
+    set title = #{title,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      check_state = #{checkState,jdbcType=VARCHAR},
+      approval_opinion = #{approvalOpinion,jdbcType=VARCHAR},
+      attachment_url = #{attachmentUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 获取投诉建议列表 -->
+     <select id="getAll" resultMap="ExtendResultMap" parameterType="map">
+    select t1.id,t1.title,t1.description,t1.type,t1.state,t1.CREATE_TIME,t2.REAL_NAME as realName,t1.CREATE_TIME,t1.attachment_url
+    from inter_accuse_advice t1,user t2 where t1.user_id = t2.id
+      <if test="realName != null and realName != ''" >
+     	and t2.REAL_NAME LIKE (concat('%',concat(#{realName,jdbcType=VARCHAR},'%'))) 
+      </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+    <!-- 投诉建议项页数 -->
+     <select id="countGetAll" resultType="Integer" parameterType="map">
+        select COUNT(1) from inter_accuse_advice t1,user t2 where t1.user_id = t2.id 
+     <if test="realName != null and realName != ''" >
+     	  and t2.REAL_NAME LIKE (concat('%',concat(#{realName,jdbcType=VARCHAR},'%'))) 
+      </if>
+    </select>
+    
+    <!-- 获取个人投诉建议列表 -->
+     <select id="getPersonAll" resultMap="ExtendResultMap" parameterType="map">
+    select t1.id,t1.title,t1.description,t1.type,t1.state,t1.CREATE_TIME,t2.REAL_NAME as realName,t1.attachment_url
+    from inter_accuse_advice t1,user t2 where t1.user_id = t2.id and t2.LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+      <if test="realName != null and realName != ''" >
+     	and t2.REAL_NAME LIKE (concat('%',concat(#{realName,jdbcType=VARCHAR},'%'))) 
+      </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+</mapper>

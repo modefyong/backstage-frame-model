@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterPersonApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterPersonApply" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="item_kind" property="itemKind" jdbcType="VARCHAR" />
+    <result column="detail_num" property="detailNum" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="judge_method" property="judgeMethod" jdbcType="VARCHAR" />
+    <result column="file" property="file" jdbcType="VARCHAR" />
+    <result column="check_state" property="checkState" jdbcType="VARCHAR" />
+    <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+    <result column="apply_person" property="applyPerson" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+    <result column="approval_opinion" property="approvalOpinion" jdbcType="VARCHAR" />
+    <result column="attachment_url" property="attachmentUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, item_kind, detail_num, description, score, judge_method, file, check_state, apply_time, 
+    apply_person, user_id, check_time, approval_opinion, attachment_url
+  </sql>
+  <!-- 分页获取自主申请待审批列表 -->
+  <select id="selectPersonApplyForPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_person_apply
+  	where check_state = '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取自主申请待审批列表数量 -->
+  <select id="selectPersonApplyForListCount" resultType="Integer">
+  	select count(1)
+  	from inter_person_apply
+  	where check_state = '0'
+  </select>
+  <!-- 分页获取自主申请已审批列表 -->
+  <select id="selectPersonApplyHavePageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_person_apply
+  	where check_state != '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取自主申请已审批列表数量 -->
+  <select id="selectPersonApplyHaveListCount" resultType="Integer">
+  	select count(1)
+  	from inter_person_apply
+  	where check_state != '0'
+  </select>
+  <!-- 分页获取自主申请我发起的列表 -->
+  <select id="selectPersonApplyBySelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_person_apply
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取自主申请我发起的列表数量 -->
+  <select id="selectPersonApplyBySelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_person_apply
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!-- 分页获取自主申请待我审批列表 -->
+  <select id="selectPersonApplyForSelfPageList" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_person_apply
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取自主申请待我审批列表数量 -->
+  <select id="selectPersonApplyForSelfListCount" resultType="Integer" parameterType="java.lang.String">
+  	select count(1)
+  	from inter_person_apply
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 分页获取自主申请我已审批列表 -->
+  <select id="selectPersonApplyHaveSelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_person_apply
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取自主申请我已审批列表数量 -->
+  <select id="selectPersonApplyHaveSelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_person_apply
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 根据id获取自主申请对象 -->
+  <select id="selectPersonApplyById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  		p.id, d.mark item_kind, d.content detail_num, p.description, d.score score, d.meth judge_method,
+  		p.file, p.check_state, p.apply_time, p.apply_person, p.user_id, p.check_time, p.approval_opinion, p.attachment_url
+    from 
+    	inter_person_apply p
+    join 
+    	inter_detail d
+    on 
+    	p.detail_num = d.id
+    where p.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_person_apply
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_person_apply
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterPersonApply" >
+    insert into inter_person_apply (id, item_kind, detail_num, 
+      description, score, judge_method, 
+      file, check_state, apply_time, 
+      apply_person, user_id, check_time,
+      approval_opinion, attachment_url
+      )
+    values (#{id,jdbcType=VARCHAR}, #{itemKind,jdbcType=VARCHAR}, #{detailNum,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, #{judgeMethod,jdbcType=VARCHAR}, 
+      #{file,jdbcType=VARCHAR}, #{checkState,jdbcType=VARCHAR}, #{applyTime,jdbcType=TIMESTAMP}, 
+      #{applyPerson,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{checkTime,jdbcType=TIMESTAMP},
+      #{approvalOpinion,jdbcType=VARCHAR}, #{attachmentUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterPersonApply" >
+    insert into inter_person_apply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="itemKind != null" >
+        item_kind,
+      </if>
+      <if test="detailNum != null" >
+        detail_num,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="judgeMethod != null" >
+        judge_method,
+      </if>
+      <if test="file != null" >
+        file,
+      </if>
+      <if test="checkState != null" >
+        check_state,
+      </if>
+      <if test="applyTime != null" >
+        apply_time,
+      </if>
+      <if test="applyPerson != null" >
+        apply_person,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="checkTime != null" >
+        check_time,
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion,
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="itemKind != null" >
+        #{itemKind,jdbcType=VARCHAR},
+      </if>
+      <if test="detailNum != null" >
+        #{detailNum,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="judgeMethod != null" >
+        #{judgeMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="file != null" >
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="checkState != null" >
+        #{checkState,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null" >
+        #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyPerson != null" >
+        #{applyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalOpinion != null" >
+        #{approvalOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentUrl != null" >
+        #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterPersonApply" >
+    update inter_person_apply
+    <set >
+      <if test="itemKind != null" >
+        item_kind = #{itemKind,jdbcType=VARCHAR},
+      </if>
+      <if test="detailNum != null" >
+        detail_num = #{detailNum,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="judgeMethod != null" >
+        judge_method = #{judgeMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="file != null" >
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="checkState != null" >
+        check_state = #{checkState,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null" >
+        apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyPerson != null" >
+        apply_person = #{applyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion = #{approvalOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterPersonApply" >
+    update inter_person_apply
+    set item_kind = #{itemKind,jdbcType=VARCHAR},
+      detail_num = #{detailNum,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      judge_method = #{judgeMethod,jdbcType=VARCHAR},
+      file = #{file,jdbcType=VARCHAR},
+      check_state = #{checkState,jdbcType=VARCHAR},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      apply_person = #{applyPerson,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      approval_opinion = #{approvalOpinion,jdbcType=VARCHAR},
+      attachment_url = #{attachmentUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

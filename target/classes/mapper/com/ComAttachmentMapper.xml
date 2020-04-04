@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComAttachmentMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComAttachment" >
+    <id column="at_id" property="atId" jdbcType="VARCHAR" />
+    <result column="at_name" property="atName" jdbcType="VARCHAR" />
+    <result column="at_url" property="atUrl" jdbcType="VARCHAR" />
+    <result column="at_status" property="atStatus" jdbcType="VARCHAR" />
+    <result column="at_md5" property="atMD5" jdbcType="VARCHAR" />
+    <result column="at_desc" property="atDesc" jdbcType="VARCHAR" />
+    <result column="at_content" property="atContent" jdbcType="VARCHAR" />
+    <result column="at_type" property="atType" jdbcType="INTEGER" />
+    <result column="at_staff_code" property="atStaffCode" jdbcType="VARCHAR" />
+    <result column="at_q_code" property="atQCode" jdbcType="VARCHAR" />
+    <result column="at_sc_code" property="atScCode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from com_attachment
+    where at_staff_code = #{id,jdbcType=VARCHAR}
+  </delete>  
+  <select id="getByAtStaffCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select * from com_attachment 
+    where at_staff_code = #{stId,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComAttachment" >
+    insert into com_attachment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="atId != null" >
+        at_id,
+      </if>
+      <if test="atName != null" >
+        at_name,
+      </if>
+      <if test="atUrl != null" >
+        at_url,
+      </if>
+      <if test="atStatus != null" >
+        at_status,
+      </if>
+      <if test="atMD5 != null" >
+        at_md5,
+      </if>
+      <if test="atDesc != null" >
+        at_desc,
+      </if>
+      <if test="atContent != null" >
+        at_content,
+      </if>
+      <if test="atType != null" >
+        at_type,
+      </if>
+      <if test="atStaffCode != null" >
+        at_staff_code,
+      </if>
+      <if test="atQCode != null" >
+        at_q_code,
+      </if>
+      <if test="atScCode != null" >
+        at_sc_code,
+      </if>     
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="atId != null" >
+        #{atId,jdbcType=VARCHAR},
+      </if>
+      <if test="atName != null" >
+        #{atName,jdbcType=VARCHAR},
+      </if>
+      <if test="atUrl != null" >
+        #{atUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="atStatus != null" >
+        #{atStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="atMD5 != null" >
+        #{atMD5,jdbcType=VARCHAR},
+      </if>
+      <if test="atDesc != null" >
+        #{atDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="atContent != null" >
+        #{atContent,jdbcType=VARCHAR},
+      </if>
+      <if test="atType != null" >
+        #{atType,jdbcType=INTEGER},
+      </if>
+      <if test="atStaffCode != null" >
+        #{atStaffCode,jdbcType=VARCHAR},
+      </if>
+      <if test="atQCode != null" >
+        #{atQCode,jdbcType=VARCHAR},
+      </if>
+      <if test="atScCode != null" >
+        #{atScCode,jdbcType=VARCHAR},
+      </if>     
+    </trim>
+  </insert> 
+  <update id="update" parameterType="com.lrhb.dataaccess.model.com.ComAttachment" >
+    update com_attachment
+    <set >
+      <if test="atId != null" >
+        at_id = #{atId,jdbcType=VARCHAR},
+      </if>
+      <if test="atName != null" >
+        at_name = #{atName,jdbcType=VARCHAR},
+      </if>
+      <if test="atUrl != null" >
+        at_url = #{atUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="atStatus != null" >
+        at_status = #{atStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="atMD5 != null" >
+        at_md5 = #{atMD5,jdbcType=VARCHAR},
+      </if>
+      <if test="atDesc != null" >
+        at_desc = #{atDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="atContent != null" >
+        at_content = #{atContent,jdbcType=VARCHAR},
+      </if>
+      <if test="atType != null" >
+        at_type = #{atType,jdbcType=INTEGER},
+      </if>
+      <if test="atStaffCode != null" >
+        at_staff_code = #{atStaffCode,jdbcType=VARCHAR},
+      </if>
+      <if test="atQCode != null" >
+        at_q_code = #{atQCode,jdbcType=VARCHAR},
+      </if>
+      <if test="atScCode != null" >
+        at_sc_code = #{atScCode,jdbcType=VARCHAR},
+      </if>     
+    </set>
+    where at_staff_code = #{atStaffCode,jdbcType=VARCHAR}
+  </update>  
+</mapper>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目添加项</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../../../lib/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all"/>
+    <link rel="stylesheet" href="../../../common/css/user.css" media="all"/>
+    <style type="text/css">
+        .layui-form-item .layui-inline {
+            width: 99.333%;
+            float: left;
+            margin-right: 0;
+        }
+        @media (max-width: 1240px) {
+            .layui-form-item .layui-inline {
+                width: 100%;
+                float: none;
+            }
+        }
+    </style>
+</head>
+<body class="childrenBody">
+<blockquote class="layui-elem-quote news_search">
+    <form class="layui-form"> 
+    	<div class="layui-inline">
+        	<label class="layui-form-label">审批类型</label>
+	        <div class="layui-input-block">
+	        	<select name="checkType" id="checkType">
+	        		<option value="">-请选择-</option>
+	        		<option value="0">待我审批</option>
+	        		<option value="1">我已审批</option>
+	        		<option value="2">我发起的</option>
+	        		<option value="3">抄送我的</option>
+	        	</select>
+	    	</div>    	
+    	</div>  	       
+        <!-- <div class="layui-inline">
+        	<label class="layui-form-label">项目名称</label>
+	        <div class="layui-input-block">
+	      		<input type="text" class="layui-input" name="projectName" id="projectName" autocomplete="off">
+	    	</div>    	
+    	</div> -->   
+        <div class="layui-inline">
+        	<input type="hidden" id="loginName" name="loginName">
+        	<input type="hidden" id="roleFlag" name="roleFlag">
+            <a class="layui-btn search_btn" lay-submit="" lay-filter="queryMenu">查询</a>
+        </div>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-primary clear_search">清空</a>
+        </div>
+    </form>
+</blockquote>
+<!--表格区-->
+<div class="layui-form">
+    <!--通过lay-filter区分toolbar事件容器-->
+    <table id="itemAddList-data" lay-filter="itemAddListFilter" class="layui-table"></table>
+</div>
+<!--toolbar模板-->
+<script type="text/html" id="barDemo">
+    <!--通过lay-event定义事件-->
+	{{# if(d.checkState == 0 && document.getElementById("checkType").value == 0){ }}
+		<a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="view"><i class="layui-icon">&#xe62a;</i>详情</a>
+    	<a class="layui-btn layui-btn-sm approval_btn" lay-event="approval"><i class="layui-icon">&#xe642;</i>审批</a>
+    {{# } else if(d.checkState == 0 && document.getElementById("checkType").value == 2){ }}
+		<a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="view"><i class="layui-icon">&#xe62a;</i>详情</a>
+    	<a class="layui-btn layui-btn-sm approval_btn" lay-event="approval"><i class="layui-icon">&#xe642;</i>审批</a>
+		<a class="layui-btn layui-btn-sm layui-btn-danger revoke_btn" lay-event="revoke"><i class="layui-icon">&#xe640;</i>撤销</a>
+ 	{{# } else if(d.checkState == 1 || d.checkState == 2 || d.checkState == 3){ }}
+		<a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="view"><i class="layui-icon">&#xe62a;</i>详情</a>
+ 	{{# } }}	
+</script>
+<!--附件模板-->
+<!-- <a href="" style="color: blue; font-weight: bold;" lay-event="edit">添加流程图</a> -->
+<script type="text/html" id="attachmentTemplate">
+	{{# if(d.attachmentUrl != "" && d.attachmentUrl != null){ }}
+		<a href="{{ d.attachmentUrl }}" target="_blank" style="color: LightSeaGreen;">查看附件</a>
+    {{# } else{ }}				
+		<a style="color: Aquamarine3;">暂无附件</a>
+ 	{{# } }}
+</script>
+<!--审核状态模板-->
+<script type="text/html" id="checkStateTemplate">
+    {{# if(d.checkState == 0){ }}
+		<a style="color: SpringGreen;">待审批</a>
+    {{# } else if(d.checkState == 1){ }}
+		<a style="color: green;">审批通过</a>
+ 	{{# } else if(d.checkState == 2){ }}
+		<a style="color: red;">审批未通过</a>
+ 	{{# } else if(d.checkState == 3){ }}
+		<a style="color: Grey; text-decoration: line-through;">已撤销</a>
+ 	{{# } }}
+</script>
+<!--时间模板-->
+<script type="text/html" id="timeTemplate">
+    {{layui.util.toDateString(d.addTime)}}
+</script>
+<script type="text/html" id="toolbarDemo">
+	<div class="layui-btn-container"></div>
+</script>
+<!--一般情况下，一个业务页面引入一个layui.js,config.js和业务js这三个js就够了-->
+<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+<script type="text/javascript" src="../../../common/js/config.js"></script>
+<script type="text/javascript" src="js/allItemAdd.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterDetailListMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterDetailList" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+    <result column="detail_rule_id" property="detailRuleId" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IntergralPartExtend" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+    <result column="detail_rule_id" property="detailRuleId" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="detailKind" property="detailKind" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="meth" property="meth" jdbcType="VARCHAR" />
+    <result column="realName" property="realName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, type_id, detail_rule_id, notes, user_id, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_detail_list
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_detail_list
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailList" >
+    insert into inter_detail_list (id, type_id, detail_rule_id, 
+      notes, user_id, CREATE_TIME
+      )
+    values (#{id,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{detailRuleId,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailList" >
+    insert into inter_detail_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="typeId != null" >
+        type_id,
+      </if>
+      <if test="detailRuleId != null" >
+        detail_rule_id,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailRuleId != null" >
+        #{detailRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailList" >
+    update inter_detail_list
+    <set >
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailRuleId != null" >
+        detail_rule_id = #{detailRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailList" >
+    update inter_detail_list
+    set type_id = #{typeId,jdbcType=VARCHAR},
+      detail_rule_id = #{detailRuleId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 获取积分列表 -->
+ <select id="getAll" resultMap="ExtendResultMap" parameterType="map">
+    select t1.id, t2.inter_kind as detailKind,t3.content as content,t3.score as score,t3.meth,t1.notes,t4.REAL_NAME as realName,t1.CREATE_TIME
+    from inter_detail_list t1, inter_detailkind t2, inter_detail t3, user t4 
+    where t1.type_id = t2.id and t1.detail_rule_id = t3.id and t1.user_id = t4.ID
+    <if test="detailKind != null and detailKind != ''" >
+     	and t2.inter_kind = #{detailKind,jdbcType=VARCHAR}
+      </if>
+      <if test="realName != null and realName != ''" >
+     	and t4.REAL_NAME = #{realName,jdbcType=VARCHAR}
+      </if>
+    limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+</select>
+<!-- 积分列表页数 -->
+ <select id="countGetAll" resultType="Integer" parameterType="map">
+    select count(1) from inter_detail_list
+</select>
+
+<!--根据id获取积分列表详情 -->
+  	<select id="getInterPartListById" parameterType="map" resultMap="ExtendResultMap">
+    select * from inter_detail_list t
+        where t.id = #{id,jdbcType=VARCHAR}
+  	</select>
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterDetailkindMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterDetailkind" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="inter_kind" property="interKind" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, inter_kind
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_detailkind
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_detailkind
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailkind" >
+    insert into inter_detailkind (id, inter_kind
+      )
+    values (#{id,jdbcType=VARCHAR}, #{interKind,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailkind" >
+    insert into inter_detailkind
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="interKind != null" >
+        inter_kind,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="interKind != null" >
+        #{interKind,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailkind" >
+    update inter_detailkind
+    <set >
+      <if test="interKind != null" >
+        inter_kind = #{interKind,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterDetailkind" >
+    update inter_detailkind
+    set inter_kind = #{interKind,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 获取积分细则列表 -->
+     <select id="getAll" resultMap="BaseResultMap" parameterType="map">
+    select * from inter_detailkind t
+    where 1=1
+      <if test="interKind != null and interKind != ''" >
+     	and t.inter_kind = #{interKind,jdbcType=VARCHAR}
+      </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+    </select>
+    <!-- 积分项页数 -->
+     <select id="countGetAll" resultType="Integer" parameterType="map">
+        select count(1)
+        from inter_detailkind t
+        where 1=1 
+     <if test="interKind != null and interKind != ''" >
+     	  and t.inter_kind = #{interKind,jdbcType=VARCHAR}
+      </if>
+    </select>
+  <select id="getInterDetailKind" parameterType="map" resultMap="BaseResultMap">
+    select * from inter_detailkind t where t.inter_kind = #{interKind,jdbcType=VARCHAR}
+  </select>
+  <!-- 获取积分细则种类 -->
+    <select id="getDetailKind" parameterType="map" resultMap="BaseResultMap">
+    	select inter_kind from inter_detailkind 
+  	</select>
+  <!--根据id获取积分列表  -->
+  	<select id="getById" parameterType="map" resultMap="BaseResultMap">
+    select * from inter_detailkind t
+        where t.id = #{id,jdbcType=VARCHAR}
+  	</select>
+  	<!--根据类别获取积分类别id  -->
+  	<select id="getInterKindIdByKind" parameterType="map" resultMap="BaseResultMap">
+    select * from inter_detailkind t
+        where t.inter_kind = #{interKind,jdbcType=VARCHAR}
+  	</select>
+</mapper>

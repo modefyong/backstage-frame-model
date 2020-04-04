@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.intergral.InterManageAuthorityMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.intergral.InterManageAuthority" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="grant_score" property="grantScore" jdbcType="VARCHAR" />
+    <result column="should_score" property="shouldScore" jdbcType="VARCHAR" />
+    <result column="residue_score" property="residueScore" jdbcType="VARCHAR" />
+    <result column="staff" property="staff" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="file" property="file" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="dep_id" property="depId" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="REPORT_TIME" property="reportTime" jdbcType="TIMESTAMP" />
+    <result column="check_state" property="checkState" jdbcType="VARCHAR" />
+    <result column="approval_opinion" property="approvalOpinion" jdbcType="VARCHAR" />
+    <result column="attachment_url" property="attachmentUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ExtendResultMap" type="com.lrhb.service.beans.intergral.IntergralAccuseAdviceExtend" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="grant_score" property="grantScore" jdbcType="VARCHAR" />
+    <result column="should_score" property="shouldScore" jdbcType="VARCHAR" />
+    <result column="residue_score" property="residueScore" jdbcType="VARCHAR" />
+    <result column="staff" property="staff" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="file" property="file" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="dep_id" property="depId" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="REPORT_TIME" property="reportTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, grant_score, should_score, residue_score, staff, description, file, department, 
+    user_id, dep_id, role_id, REPORT_TIME, check_state, approval_opinion, attachment_url
+  </sql>
+  <!-- 分页获取主管权限分待审批列表 -->
+  <select id="selectManageAuthorityForPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_manage_authority
+  	where check_state = '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取主管权限分待审批列表数量 -->
+  <select id="selectManageAuthorityForListCount" resultType="Integer">
+  	select count(1)
+  	from inter_manage_authority
+  	where check_state = '0'
+  </select>
+  <!-- 分页获取主管权限分已审批列表 -->
+  <select id="selectManageAuthorityHavePageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_manage_authority
+  	where check_state != '0'
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取主管权限分已审批列表数量 -->
+  <select id="selectManageAuthorityHaveListCount" resultType="Integer">
+  	select count(1)
+  	from inter_manage_authority
+  	where check_state != '0'
+  </select>
+  <!-- 分页获取主管权限分我发起的列表 -->
+  <select id="selectManageAuthorityBySelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_manage_authority
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取主管权限分我发起的列表数量 -->
+  <select id="selectManageAuthorityBySelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_manage_authority
+  	where 1=1
+    <if test="userId != null and userId != ''" >
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!-- 分页获取主管权限分待我审批列表 -->
+  <select id="selectManageAuthorityForSelfPageList" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_manage_authority
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取主管权限分待我审批列表数量 -->
+  <select id="selectManageAuthorityForSelfListCount" resultType="Integer" parameterType="java.lang.String">
+  	select count(1)
+  	from inter_manage_authority
+  	where check_state = '0' and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 分页获取主管权限分我已审批列表 -->
+  <select id="selectManageAuthorityHaveSelfPageList" resultMap="BaseResultMap" parameterType="map">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from inter_manage_authority
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  	limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <!-- 获取主管权限分我已审批列表数量 -->
+  <select id="selectManageAuthorityHaveSelfListCount" resultType="Integer" parameterType="map">
+  	select count(1)
+  	from inter_manage_authority
+  	where check_state in (1,2) and user_id in
+    <foreach collection="staffIdList" item="userId" open="(" close=")" separator=",">
+    	#{userId}
+    </foreach>
+  </select>
+  <!-- 根据id获取主管权限分对象 -->
+  <select id="selectManageAuthorityById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select * from inter_manage_authority
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- <select id="selectManageAuthorityById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  		i.id, d.inter_kind item_kind, i.content, i.description, i.score, i.judge_method, i.file, i.check_state, i.add_time, 
+    i.add_person, i.user_id, i.check_time, i.approval_opinion
+    from 
+    	inter_item_add i
+    join 
+    	inter_detailkind d
+    on 
+    	i.item_kind = d.id
+    where i.id = #{id,jdbcType=VARCHAR}
+  </select> -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from inter_manage_authority
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from inter_manage_authority
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.intergral.InterManageAuthority" >
+    insert into inter_manage_authority (id, grant_score, should_score, 
+      residue_score, staff, description, 
+      file, department, user_id, dep_id, 
+      role_id, REPORT_TIME, check_state, 
+      approval_opinion, attachment_url
+      )
+    values (#{id,jdbcType=VARCHAR}, #{grantScore,jdbcType=VARCHAR}, #{shouldScore,jdbcType=VARCHAR}, 
+      #{residueScore,jdbcType=VARCHAR}, #{staff,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{file,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{depId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{reportTime,jdbcType=TIMESTAMP},
+      #{checkState,jdbcType=VARCHAR}, #{approvalOpinion,jdbcType=VARCHAR}, #{attachmentUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.intergral.InterManageAuthority" >
+    insert into inter_manage_authority
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="grantScore != null" >
+        grant_score,
+      </if>
+      <if test="shouldScore != null" >
+        should_score,
+      </if>
+      <if test="residueScore != null" >
+        residue_score,
+      </if>
+      <if test="staff != null" >
+        staff,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="file != null" >
+        file,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="depId != null" >
+        dep_id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="reportTime != null" >
+        REPORT_TIME,
+      </if>
+      <if test="checkState != null" >
+        check_state,
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion,
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="grantScore != null" >
+        #{grantScore,jdbcType=VARCHAR},
+      </if>
+      <if test="shouldScore != null" >
+        #{shouldScore,jdbcType=VARCHAR},
+      </if>
+      <if test="residueScore != null" >
+        #{residueScore,jdbcType=VARCHAR},
+      </if>
+      <if test="staff != null" >
+        #{staff,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="file != null" >
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        #{depId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        #{reportTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkState != null" >
+        #{checkState,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalOpinion != null" >
+        #{approvalOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentUrl != null" >
+        #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.intergral.InterManageAuthority" >
+    update inter_manage_authority
+    <set >
+      <if test="grantScore != null" >
+        grant_score = #{grantScore,jdbcType=VARCHAR},
+      </if>
+      <if test="shouldScore != null" >
+        should_score = #{shouldScore,jdbcType=VARCHAR},
+      </if>
+      <if test="residueScore != null" >
+        residue_score = #{residueScore,jdbcType=VARCHAR},
+      </if>
+      <if test="staff != null" >
+        staff = #{staff,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="file != null" >
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        dep_id = #{depId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportTime != null" >
+        REPORT_TIME = #{reportTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkState != null" >
+        check_state = #{checkState,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalOpinion != null" >
+        approval_opinion = #{approvalOpinion,jdbcType=TIMESTAMP},
+      </if>
+      <if test="attachmentUrl != null" >
+        attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.intergral.InterManageAuthority" >
+    update inter_manage_authority
+    set grant_score = #{grantScore,jdbcType=VARCHAR},
+      should_score = #{shouldScore,jdbcType=VARCHAR},
+      residue_score = #{residueScore,jdbcType=VARCHAR},
+      staff = #{staff,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      file = #{file,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      dep_id = #{depId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR},
+      REPORT_TIME = #{reportTime,jdbcType=TIMESTAMP},
+      check_state = #{checkState,jdbcType=VARCHAR},
+      approval_opinion = #{approvalOpinion,jdbcType=VARCHAR},
+      attachment_url = #{attachmentUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

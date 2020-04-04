@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComStaffMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComStaff" >
+    <id column="st_id" property="stId" jdbcType="VARCHAR" />
+    <result column="st_name" property="stName" jdbcType="VARCHAR" />
+    <result column="st_sex" property="stSex" jdbcType="INTEGER" />
+    <result column="st_birthday" property="stBirthday" jdbcType="DATE" />
+    <result column="st_job_num" property="stJobNum" jdbcType="VARCHAR" />
+    <result column="st_email" property="stEmail" jdbcType="VARCHAR" />
+    <result column="st_mobile" property="stMobile" jdbcType="VARCHAR" />
+    <result column="st_phone" property="stPhone" jdbcType="VARCHAR" />
+    <result column="st_comp_code" property="stCompCode" jdbcType="VARCHAR" />
+    <result column="st_user_code" property="stUserCode" jdbcType="VARCHAR" />
+    <result column="st_duty" property="stDuty" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    st_id, st_name, st_sex, st_birthday, st_job_num, st_email, st_mobile, st_phone, st_comp_code, 
+    st_user_code, st_duty
+  </sql>
+  <select id="countSelectAll" resultType="Integer" parameterType="map">
+        select count(1) from com_staff 
+        <if test="duty !=null and duty != ''">
+         LEFT JOIN com_duty ON com_duty.d_id = com_staff.st_duty
+         </if>
+        where 1=1
+        <if test="stName !=null and stName != ''">
+            <!-- and st_name = #{stName,jdbcType=VARCHAR} -->            
+            <!-- and st_name LIKE '%' #{stName,jdbcType=VARCHAR} '%' -->
+            and st_name LIKE (concat('%',concat(#{stName,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="stSex !=null and stSex != ''">
+            and st_sex = #{stSex,jdbcType=VARCHAR}
+        </if>
+        <if test="compCode !=null and compCode != ''">
+            and st_comp_code = #{compCode,jdbcType=VARCHAR}
+        </if>
+        <if test="duty !=null and duty != ''">
+        	and com_duty.d_name = #{duty,jdbcType=VARCHAR}
+        </if>
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+        select * from com_staff 
+         <if test="duty !=null and duty != ''">
+         LEFT JOIN com_duty ON com_duty.d_id = com_staff.st_duty
+         </if>
+        where 1=1 
+        <if test="stName !=null and stName != ''">
+            <!-- and st_name = #{stName,jdbcType=VARCHAR} -->            
+            <!-- and st_name LIKE '%' #{stName,jdbcType=VARCHAR} '%' -->
+            and st_name LIKE (concat('%',concat(#{stName,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="stSex !=null and stSex != ''">
+            and st_sex = #{stSex,jdbcType=VARCHAR}
+        </if>
+          <if test="compCode !=null and compCode != ''">
+            and st_comp_code = #{compCode,jdbcType=VARCHAR}
+        </if>
+        <if test="duty !=null and duty != ''">
+        	and com_duty.d_name = #{duty,jdbcType=VARCHAR}
+        </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+   </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from com_staff
+    where st_id = #{stId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_staff
+    where st_id = #{stId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComStaff" >
+    insert into com_staff (st_id, st_name, st_sex, 
+      st_birthday, st_job_num, st_email, 
+      st_mobile, st_phone, st_comp_code, 
+      st_user_code, st_duty)
+    values (#{stId,jdbcType=VARCHAR}, #{stName,jdbcType=VARCHAR}, #{stSex,jdbcType=INTEGER}, 
+      #{stBirthday,jdbcType=DATE}, #{stJobNum,jdbcType=VARCHAR}, #{stEmail,jdbcType=VARCHAR}, 
+      #{stMobile,jdbcType=VARCHAR}, #{stPhone,jdbcType=VARCHAR}, #{stCompCode,jdbcType=VARCHAR}, 
+      #{stUserCode,jdbcType=VARCHAR}, #{stDuty,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComStaff" >
+    insert into com_staff
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stId != null" >
+        st_id,
+      </if>
+      <if test="stName != null" >
+        st_name,
+      </if>
+      <if test="stSex != null" >
+        st_sex,
+      </if>
+      <if test="stBirthday != null" >
+        st_birthday,
+      </if>
+      <if test="stJobNum != null" >
+        st_job_num,
+      </if>
+      <if test="stEmail != null" >
+        st_email,
+      </if>
+      <if test="stMobile != null" >
+        st_mobile,
+      </if>
+      <if test="stPhone != null" >
+        st_phone,
+      </if>
+      <if test="stCompCode != null" >
+        st_comp_code,
+      </if>
+      <if test="stUserCode != null" >
+        st_user_code,
+      </if>
+      <if test="stDuty != null" >
+        st_duty,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stId != null" >
+        #{stId,jdbcType=VARCHAR},
+      </if>
+      <if test="stName != null" >
+        #{stName,jdbcType=VARCHAR},
+      </if>
+      <if test="stSex != null" >
+        #{stSex,jdbcType=INTEGER},
+      </if>
+      <if test="stBirthday != null" >
+        #{stBirthday,jdbcType=DATE},
+      </if>
+      <if test="stJobNum != null" >
+        #{stJobNum,jdbcType=VARCHAR},
+      </if>
+      <if test="stEmail != null" >
+        #{stEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="stMobile != null" >
+        #{stMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="stPhone != null" >
+        #{stPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="stCompCode != null" >
+        #{stCompCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stUserCode != null" >
+        #{stUserCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stDuty != null" >
+        #{stDuty,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComStaff" >
+    update com_staff
+    <set >
+      <if test="stName != null" >
+        st_name = #{stName,jdbcType=VARCHAR},
+      </if>
+      <if test="stSex != null" >
+        st_sex = #{stSex,jdbcType=INTEGER},
+      </if>
+      <if test="stBirthday != null" >
+        st_birthday = #{stBirthday,jdbcType=DATE},
+      </if>
+      <if test="stJobNum != null" >
+        st_job_num = #{stJobNum,jdbcType=VARCHAR},
+      </if>
+      <if test="stEmail != null" >
+        st_email = #{stEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="stMobile != null" >
+        st_mobile = #{stMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="stPhone != null" >
+        st_phone = #{stPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="stCompCode != null" >
+        st_comp_code = #{stCompCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stUserCode != null" >
+        st_user_code = #{stUserCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stDuty != null" >
+        st_duty = #{stDuty,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where st_id = #{stId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComStaff" >
+    update com_staff
+    set st_name = #{stName,jdbcType=VARCHAR},
+      st_sex = #{stSex,jdbcType=INTEGER},
+      st_birthday = #{stBirthday,jdbcType=DATE},
+      st_job_num = #{stJobNum,jdbcType=VARCHAR},
+      st_email = #{stEmail,jdbcType=VARCHAR},
+      st_mobile = #{stMobile,jdbcType=VARCHAR},
+      st_phone = #{stPhone,jdbcType=VARCHAR},
+      st_comp_code = #{stCompCode,jdbcType=VARCHAR},
+      st_user_code = #{stUserCode,jdbcType=VARCHAR},
+      st_duty = #{stDuty,jdbcType=VARCHAR}
+    where st_id = #{stId,jdbcType=VARCHAR}
+  </update>
+</mapper>

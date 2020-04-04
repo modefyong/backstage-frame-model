@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComQualificationMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComQualification" >
+    <id column="q_id" property="qId" jdbcType="VARCHAR" />
+    <result column="q_code" property="qCode" jdbcType="VARCHAR" />
+    <result column="q_lic_issu_auth" property="qlicIssuAuth" jdbcType="VARCHAR" />
+    <result column="q_auth_date" property="qauthDate" jdbcType="TIMESTAMP" />
+    <result column="q_name" property="qName" jdbcType="VARCHAR" />
+    <result column="q_corporation" property="qCorporation" jdbcType="VARCHAR" />
+    <result column="q_vali_date_start" property="qvaliDateStart" jdbcType="TIMESTAMP" />
+    <result column="q_vali_date_end" property="qvaliDateEnd" jdbcType="TIMESTAMP" />
+    <result column="q_auth_hw_type" property="qAuthHwType" jdbcType="VARCHAR" />
+    <result column="q_legal_rep" property="qLegalRep" jdbcType="VARCHAR" />
+    <result column="q_lic_first_date" property="qlicFirstDate" jdbcType="TIMESTAMP" />
+    <result column="q_type" property="qType" jdbcType="VARCHAR" />
+    <result column="q_busi_sope" property="qBusiSope" jdbcType="VARCHAR" />
+    <result column="q_class" property="qClass" jdbcType="VARCHAR" />
+    <result column="q_comp_code" property="qCompCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    q_id, q_code, q_lic_issu_auth, q_auth_date, q_name, q_corporation, q_vali_date_start, 
+    q_vali_date_end, q_auth_hw_type, q_legal_rep, q_lic_first_date, q_type, q_busi_sope, 
+    q_class, q_comp_code
+  </sql>
+  <select id="countSelectAll" resultType="Integer" parameterType="map">
+        select count(1) from com_qualification 
+        where 1=1
+         <if test="qname !=null and qname != ''">
+            and q_name LIKE (concat('%',concat(#{qname,jdbcType=VARCHAR},'%'))) 
+        </if>
+        <if test="qcode !=null and qcode != ''">
+            and q_code LIKE (concat('%',concat(#{qcode,jdbcType=VARCHAR},'%')))
+        </if>
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+        select q_id, q_code, q_name, q_vali_date_end, q_auth_hw_type, q_type, q_busi_sope, 
+        q_comp_code from com_qualification 
+        where 1=1 
+        <if test="qname !=null and qname != ''">
+            and q_name LIKE (concat('%',concat(#{qname,jdbcType=VARCHAR},'%'))) 
+        </if>
+        <if test="qcode !=null and qcode != ''">
+            and q_code LIKE (concat('%',concat(#{qcode,jdbcType=VARCHAR},'%')))
+        </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+   </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from com_qualification
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_qualification
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComQualification" >
+    insert into com_qualification (q_id, q_code, q_lic_issu_auth, 
+      q_auth_date, q_name, q_corporation, 
+      q_vali_date_start, q_vali_date_end, q_auth_hw_type, 
+      q_legal_rep, q_lic_first_date, q_type, 
+      q_busi_sope, q_class, q_comp_code
+      )
+    values (#{qId,jdbcType=VARCHAR}, #{qCode,jdbcType=VARCHAR}, #{qlicIssuAuth,jdbcType=VARCHAR}, 
+      #{qauthDate,jdbcType=TIMESTAMP}, #{qName,jdbcType=VARCHAR}, #{qCorporation,jdbcType=VARCHAR}, 
+      #{qvaliDateStart,jdbcType=TIMESTAMP}, #{qvaliDateEnd,jdbcType=TIMESTAMP}, #{qAuthHwType,jdbcType=VARCHAR}, 
+      #{qLegalRep,jdbcType=VARCHAR}, #{qlicFirstDate,jdbcType=TIMESTAMP}, #{qType,jdbcType=VARCHAR}, 
+      #{qBusiSope,jdbcType=VARCHAR}, #{qClass,jdbcType=VARCHAR}, #{qCompCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComQualification" >
+    insert into com_qualification
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="qId != null" >
+        q_id,
+      </if>
+      <if test="qCode != null" >
+        q_code,
+      </if>
+      <if test="qlicIssuAuth != null" >
+        q_lic_issu_auth,
+      </if>
+      <if test="qauthDate != null" >
+        q_auth_date,
+      </if>
+      <if test="qName != null" >
+        q_name,
+      </if>
+      <if test="qCorporation != null" >
+        q_corporation,
+      </if>
+      <if test="qvaliDateStart != null" >
+        q_vali_date_start,
+      </if>
+      <if test="qvaliDateEnd != null" >
+        q_vali_date_end,
+      </if>
+      <if test="qAuthHwType != null" >
+        q_auth_hw_type,
+      </if>
+      <if test="qLegalRep != null" >
+        q_legal_rep,
+      </if>
+      <if test="qlicFirstDate != null" >
+        q_lic_first_date,
+      </if>
+      <if test="qType != null" >
+        q_type,
+      </if>
+      <if test="qBusiSope != null" >
+        q_busi_sope,
+      </if>
+      <if test="qClass != null" >
+        q_class,
+      </if>
+      <if test="qCompCode != null" >
+        q_comp_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="qId != null" >
+        #{qId,jdbcType=VARCHAR},
+      </if>
+      <if test="qCode != null" >
+        #{qCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qlicIssuAuth != null" >
+        #{qlicIssuAuth,jdbcType=VARCHAR},
+      </if>
+      <if test="qauthDate != null" >
+        #{qauthDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qName != null" >
+        #{qName,jdbcType=VARCHAR},
+      </if>
+      <if test="qCorporation != null" >
+        #{qCorporation,jdbcType=VARCHAR},
+      </if>
+      <if test="qvaliDateStart != null" >
+        #{qvaliDateStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qvaliDateEnd != null" >
+        #{qvaliDateEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qAuthHwType != null" >
+        #{qAuthHwType,jdbcType=VARCHAR},
+      </if>
+      <if test="qLegalRep != null" >
+        #{qLegalRep,jdbcType=VARCHAR},
+      </if>
+      <if test="qlicFirstDate != null" >
+        #{qlicFirstDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qType != null" >
+        #{qType,jdbcType=VARCHAR},
+      </if>
+      <if test="qBusiSope != null" >
+        #{qBusiSope,jdbcType=VARCHAR},
+      </if>
+      <if test="qClass != null" >
+        #{qClass,jdbcType=VARCHAR},
+      </if>
+      <if test="qCompCode != null" >
+        #{qCompCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComQualification" >
+    update com_qualification
+    <set >
+      <if test="qCode != null" >
+        q_code = #{qCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qlicIssuAuth != null" >
+        q_lic_issu_auth = #{qlicIssuAuth,jdbcType=VARCHAR},
+      </if>
+      <if test="qauthDate != null" >
+        q_auth_date = #{qauthDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qName != null" >
+        q_name = #{qName,jdbcType=VARCHAR},
+      </if>
+      <if test="qCorporation != null" >
+        q_corporation = #{qCorporation,jdbcType=VARCHAR},
+      </if>
+      <if test="qvaliDateStart != null" >
+        q_vali_date_start = #{qvaliDateStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qvaliDateEnd != null" >
+        q_vali_date_end = #{qvaliDateEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qAuthHwType != null" >
+        q_auth_hw_type = #{qAuthHwType,jdbcType=VARCHAR},
+      </if>
+      <if test="qLegalRep != null" >
+        q_legal_rep = #{qLegalRep,jdbcType=VARCHAR},
+      </if>
+      <if test="qlicFirstDate != null" >
+        q_lic_first_date = #{qlicFirstDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qType != null" >
+        q_type = #{qType,jdbcType=VARCHAR},
+      </if>
+      <if test="qBusiSope != null" >
+        q_busi_sope = #{qBusiSope,jdbcType=VARCHAR},
+      </if>
+      <if test="qClass != null" >
+        q_class = #{qClass,jdbcType=VARCHAR},
+      </if>
+      <if test="qCompCode != null" >
+        q_comp_code = #{qCompCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComQualification" >
+    update com_qualification
+    set q_code = #{qCode,jdbcType=VARCHAR},
+      q_lic_issu_auth = #{qlicIssuAuth,jdbcType=VARCHAR},
+      q_auth_date = #{qauthDate,jdbcType=TIMESTAMP},
+      q_name = #{qName,jdbcType=VARCHAR},
+      q_corporation = #{qCorporation,jdbcType=VARCHAR},
+      q_vali_date_start = #{qvaliDateStart,jdbcType=TIMESTAMP},
+      q_vali_date_end = #{qvaliDateEnd,jdbcType=TIMESTAMP},
+      q_auth_hw_type = #{qAuthHwType,jdbcType=VARCHAR},
+      q_legal_rep = #{qLegalRep,jdbcType=VARCHAR},
+      q_lic_first_date = #{qlicFirstDate,jdbcType=TIMESTAMP},
+      q_type = #{qType,jdbcType=VARCHAR},
+      q_busi_sope = #{qBusiSope,jdbcType=VARCHAR},
+      q_class = #{qClass,jdbcType=VARCHAR},
+      q_comp_code = #{qCompCode,jdbcType=VARCHAR}
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </update>
+</mapper>

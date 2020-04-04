@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrhb.dataaccess.dao.com.ComDivisionMapper" >
+  <resultMap id="BaseResultMap" type="com.lrhb.dataaccess.model.com.ComDivision" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="city_code" property="cityCode" jdbcType="VARCHAR" />
+    <result column="division_name" property="divisionName" jdbcType="VARCHAR" />
+    <result column="division_code" property="divisionCode" jdbcType="VARCHAR" />
+    <result column="postcode" property="postcode" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="parent_division_code" property="parentDivisionCode" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="prefecture_level_city" property="prefectureLevelCity" jdbcType="VARCHAR" />
+    <result column="county_level_city" property="countryLevelCity" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="DATE" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     id, c_longitude, c_latitude, c_code, c_lic_code, 
+    c_social_credit_code, c_type, c_src
+  </sql>
+  <select id="getCode" resultType="String">
+        select division_code from com_division 
+        where 
+        division_name = #{parentName,jdbcType=VARCHAR}       
+  </select>
+  <select id="getCount" resultType="Integer">
+        select count(*) from com_division 
+        where division_name = #{divisionName,jdbcType=VARCHAR}        
+  </select>
+  <select id="getProvinceList" resultMap="BaseResultMap">
+        select * from com_division
+        where province != ""
+        group by province         
+  </select>
+  
+  <select id="getCityList" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from com_division 
+        where parent_id = #{parentId,jdbcType=VARCHAR} and prefecture_level_city != ""
+        group by prefecture_level_city   
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+        select * from com_division t
+        where 1=1 
+        <if test="divisionName !=null and divisionName != ''">
+            <!-- and t.division_name = #{divisionName,jdbcType=VARCHAR} -->
+            and t.division_name LIKE (concat('%',concat(#{divisionName,jdbcType=VARCHAR},'%')))
+        </if>
+        <!-- <if test="divisionCode !=null and divisionCode != ''">
+            and t.division_code = #{divisionCode,jdbcType=VARCHAR}
+        </if> -->
+        <if test="parentId !=null and parentId != ''">
+            and t.parent_id = #{parentId,jdbcType=VARCHAR}
+        </if>
+        limit #{start,jdbcType=DECIMAL},#{end,jdbcType=DECIMAL}
+  </select>
+  <select id="countSelectAll" resultType="Integer" parameterType="map">
+        select count(1) from com_division t
+        where 1=1
+        <if test="divisionName !=null and divisionName != ''">
+            <!-- and t.division_name = #{divisionName,jdbcType=VARCHAR} -->
+            and t.division_name LIKE (concat('%',concat(#{divisionName,jdbcType=VARCHAR},'%')))
+        </if>
+        <if test="parentId !=null and parentId != ''">
+            and t.parent_id = #{parentId,jdbcType=VARCHAR}
+        </if>
+  </select>   
+    
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from com_division
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    insert into com_division (c_id, c_name, c_address, 
+      c_phone, c_postcode, c_longitude, 
+      c_latitude, c_code, c_lic_code, 
+      c_social_credit_code, c_type, c_src
+      )
+    values (#{cId,jdbcType=VARCHAR}, #{cName,jdbcType=VARCHAR}, #{cAddress,jdbcType=VARCHAR}, 
+      #{cPhone,jdbcType=VARCHAR}, #{cPostcode,jdbcType=VARCHAR}, #{cLongitude,jdbcType=VARCHAR}, 
+      #{cLatitude,jdbcType=VARCHAR}, #{cCode,jdbcType=VARCHAR}, #{cLicCode,jdbcType=VARCHAR}, 
+      #{cSocialCreditCode,jdbcType=VARCHAR}, #{cType,jdbcType=VARCHAR}, #{cSrc,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.lrhb.dataaccess.model.com.ComDivision" >
+    insert into com_division
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cityCode != null" >
+        city_code,
+      </if>
+      <if test="divisionName != null" >
+        division_name,
+      </if>
+      <if test="divisionCode != null" >
+        division_code,
+      </if>
+      <if test="postcode != null" >
+        postcode,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="parentDivisionCode != null" >
+        parent_division_code,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="prefectureLevelCity != null" >
+        prefecture_level_city,
+      </if>
+      <if test="countryLevelCity != null" >
+        county_level_city,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionName != null" >
+        #{divisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionCode != null" >
+        #{divisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentDivisionCode != null" >
+        #{parentDivisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="prefectureLevelCity != null" >
+        #{prefectureLevelCity,jdbcType=VARCHAR},
+      </if>
+      <if test="countryLevelCity != null" >
+        #{countryLevelCity,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="getDivision" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select * from com_division 
+        where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.lrhb.dataaccess.model.com.ComDivision" >
+    update com_division
+    <set >
+      <if test="id != null" >
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionName != null" >
+        division_name = #{divisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionCode != null" >
+        division_code = #{divisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        postcode = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentDivisionCode != null" >
+        parent_division_code = #{parentDivisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="prefectureLevelCity != null" >
+        prefecture_level_city = #{prefectureLevelCity,jdbcType=VARCHAR},
+      </if>
+      <if test="countryLevelCity != null" >
+        county_level_city = #{countryLevelCity,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lrhb.dataaccess.model.com.ComCompany" >
+    update com_company
+    set c_name = #{cName,jdbcType=VARCHAR},
+      c_address = #{cAddress,jdbcType=VARCHAR},
+      c_phone = #{cPhone,jdbcType=VARCHAR},
+      c_postcode = #{cPostcode,jdbcType=VARCHAR},
+      c_longitude = #{cLongitude,jdbcType=VARCHAR},
+      c_latitude = #{cLatitude,jdbcType=VARCHAR},
+      c_code = #{cCode,jdbcType=VARCHAR},
+      c_lic_code = #{cLicCode,jdbcType=VARCHAR},
+      c_social_credit_code = #{cSocialCreditCode,jdbcType=VARCHAR},
+      c_type = #{cType,jdbcType=VARCHAR},
+      c_src = #{cSrc,jdbcType=VARCHAR}
+    where c_id = #{cId,jdbcType=VARCHAR}
+  </update>
+</mapper>
